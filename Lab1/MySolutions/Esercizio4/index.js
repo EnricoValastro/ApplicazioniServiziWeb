@@ -37,6 +37,25 @@ app.get('/tehello/:name', (req, res) => {
    res.render('hello', {name: req.params.name});
 });
 
+//Exercise 4.4bis
+app.get('/count/:num', (req, res) =>{
+    let num = [];
+    for(let i = 0; i <= req.params.num ; i++){
+        num.push(i);
+    }
+    res.render('visualizza_numeri', {numeri: num});
+});
+
+//Exercise 4.5
+app.locals.title = 'My Express App';
+app.locals.mail = 'enrico.valastro@studio.unibo.it';
+app.get(`/tehello2/:name`, (req, res) => {
+   res.render('hello2', {name: req.params.name,
+                                        title: app.locals.title,
+                                        mail: app.locals.mail});
+});
+
+
 //Exercise 4.2bis
 app.use(express.static ('public'))
 app.use((req, res, next) => {
