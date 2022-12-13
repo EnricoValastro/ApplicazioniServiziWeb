@@ -40,7 +40,7 @@ exports.updateMovie = (req, res) => {
 };
 
 exports.getMoviesByQuery = (req, res) => {
-    moviesModel.find({actors: req.params.name, year: {$gte: req.params.by, $lte: req.params.ly}}, (err, doc) =>{
+    moviesModel.find({actors: req.query.name, year: {$gte: req.query.by, $lte: req.query.ly}}, (err, doc) =>{
         if(err){
             res.send(err);
         }
