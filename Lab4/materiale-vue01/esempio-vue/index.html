@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Hello World in Vue.js</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <style>
+    </style>
+</head>
+
+<!--https://icon-library.net//images/not-found-icon/not-found-icon-4.jpg-->
+
+<body>
+<div id="app">
+    <div class="card">
+        {{ name }}
+    </div>
+    <div class="card">
+        <ul>
+            <li v-for="prodotto in prodotti"> {{ prodotto }}</li>
+        </ul>
+    </div>
+    <div class="card">
+        <form class="form-group">
+            <input type="text" v-model="new_product">
+            <button v-on:click.prevent="insert_product">add</button>
+        </form>
+    </div>
+    <div>
+        {{ outputTesto }}
+    </div>
+    <div>
+        <form>
+            <input type="text" v-model="testo">
+        </form>
+    </div>
+    <div>
+        <button @click.prevent="getSomeData">get Data</button>
+        <p>{{ dataResponse }}</p>
+    </div>
+
+</div>
+
+
+
+
+<script src="https://unpkg.com/vue@3"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+
+    const app = Vue.createApp({
+        data(){
+            return {
+                name: "my app",
+                prodotti: [],
+                new_product: "inserisci",
+                testo: "",
+                dataResponse: null
+            }
+        },
+        computed:{
+            outputTesto(){
+                return "testo: " + this.testo
+            }
+        },
+        methods: {
+            list_products(){
+
+                this.prodotti = ['pane','pasta','olio'];
+            },
+            insert_product(){
+                this.prodotti.push(this.new_product);
+                this.new_product = "inserisci";
+            },
+            getSomeData(){
+                axios.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+                .then(response =>{
+                    this.dataResponse = response.data;
+                })
+            },
+            postSomeData(){
+                axios.post('http://localhost:8080',{"name":this.name})
+                .then(response =>{
+                    console.log(response)
+                })
+                .catch(error=>{
+                    console.log(error);
+                })
+            }
+        },
+        mounted(){
+            this.list_products();
+        }
+    });
+    app.mount('#app')
+</script>
+</body>
+</html>

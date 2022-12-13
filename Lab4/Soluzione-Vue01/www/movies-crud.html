@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Hello World in Vue.js</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<style>
+	table td img{ width: 100px;}
+</style>
+</head>
+
+<body>
+<div id="crud-movies-app" class="container-fluid">
+	<h1>CRUD Movies</h1>
+	<div class="row">
+		<div class="col">
+			<button @click.prevent="showAddMovie" type="button" class="btn btn-success"><i class="fas fa-plus"></i> Add Movie</button>
+		</div>
+	</div>
+	<div class="row" v-if="adding">
+		<div class="col">
+			<form>
+				<div class="form-group">
+					<label for="title">Title</label>
+					<input v-model="new_movie.title" type="text" class="form-control" id="title" placeholder="Enter title">
+				</div>
+				<div class="form-group">
+					<label for="plot">Plot</label>
+					<textarea v-model="new_movie.plot" class="form-control" id="plot">
+					</textarea>
+				</div>
+				<div class="form-group">
+					<label for="poster">Poster link</label>
+					<input v-model="new_movie.poster" type="text" class="form-control" id="poster" placeholder="Enter poster link">
+					<img v-bind:src="new_movie.poster" alt="" />
+				</div>
+				<div class="form-group">
+					<label for="release">Release date</label>
+					<input v-model="new_movie.released" type="date" class="form-control" id="release" >
+				</div>
+				<button @click.prevent="addMovie" type="submit" class="btn btn-primary">Submit</button>
+				<button @click.prevent="cancelAddMovie" type="submit" class="btn btn-danger">Cancel</button>
+
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+		<table class="table responsive">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">Title</th>
+					<th scope="col">Plot</th>
+					<th scope="col">Poster</th>
+					<th scope="col">Release date</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+			<tr v-for="movie in movies">
+				<td>{{ movie.title }}</td>
+				<td>{{ movie.plot }}</td>
+				<td><img v-if="movie.poster" v-bind:src="movie.poster" alt=""></td>
+				<td>{{ movie.released }}</td>
+				<td>
+					<button @click.prevent="delete_movie(movie._id)" type="button" class="btn btnsm">
+						<i class="fas fa-trash-alt"></i>
+					</button>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		</div>
+	</div>
+</div>
+<script src="https://unpkg.com/vue@3"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+	Vue.createApp({
+		data(){
+			return {
+				movies: [],
+				adding: false,
+				new_movie: {
+					"title" : "",
+					'plot' : '',
+					'poster' : '',
+					'released' : ''//new Date().toISOString().slice(0,10)
+				}
+			}
+		},
+		methods: {
+			list_movies(){
+				 axios.get("http://localhost:3000/api/movies")
+						.then(response => {
+							//console.log(response.data)
+							//this.movies = response.data;
+							response.data.forEach((movie)=>{
+								if(movie.poster!=null){
+									movie.poster = movie.poster.replace("http://ia.media-imdb.com/","https://m.media-amazon.com/")
+								}
+								else{
+									movie.poster = "https://www.stillisolutions.com/wp-content/uploads/2017/09/no-image-box-300x155.png";
+								}
+							})
+							this.movies = response.data;
+						}, error => {
+							console.log(error)
+								}
+						)
+						/*.catch(error => {
+							console.log(error);
+						})*/
+
+			},
+			delete_movie(movie_id){
+				axios.delete("http://localhost:3000/api/movies/"+movie_id)
+				.then(response => {
+					console.log("cancellato");
+					this.movies.splice(this.movies.findIndex(item => item._id === movie_id),1);
+				}, error => {
+					console.log(error);
+						}
+				)
+				/*.catch(error => {
+					console.log(error);
+				})*/
+			},
+			showAddMovie(){
+				this.adding = true;
+			},
+			cancelAddMovie() {
+				this.adding = false;
+			},
+			addMovie(){
+
+				//console.log(this.new_movie.released)
+				axios.post('/api/movies', this.new_movie)
+				.then(response => {
+					this.movies.push(response.data);
+					this.cancelAddMovie();
+				})
+				.catch(error => {
+					console.log(error);
+				})
+			}
+		},
+		created(){
+			this.list_movies();
+
+		}
+	}).mount('#crud-movies-app')
+</script>
+
+</body>
+</html>
