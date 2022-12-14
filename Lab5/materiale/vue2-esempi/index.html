@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>template</title>
+</head>
+<body>
+<div id="app"> {{ message }}</div>
+<div id="app2">
+    <div>
+        <button>click me</button>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+    const app = Vue.createApp({
+        data(){
+            return {
+                message: "hello!"
+            }
+        }
+    })
+    app.mount('#app');
+    const app2 = Vue.createApp({
+        template: `<div>
+                      <button>click me</button>
+                    </div>`,
+        data(){
+            return {
+                message: "hello!"
+            }
+        }
+    })
+    app2.mount('#app2')
+</script>
+</body>
+</html>

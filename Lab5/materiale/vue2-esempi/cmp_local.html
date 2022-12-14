@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>component</title>
+</head>
+<body>
+<div id="app">
+  <my-cmp></my-cmp>
+  <hr>
+  <my-cmp></my-cmp>
+</div>
+
+<div id="app2">
+  <my-cmp></my-cmp>
+  <hr>
+  <my-cmp></my-cmp>
+</div>
+
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const cmp = {
+    template: '<p>Server: status: {{ status }}</p>',
+    data(){
+      return {
+        status: "online"
+      }
+    }
+  }
+
+  const app = Vue.createApp({
+    components: {
+      'my-cmp': cmp
+    }
+  })
+  app.mount('#app');
+  const app2 = new Vue({
+  })
+  app.mount('#app2');
+
+</script>
+</body>
+</html>

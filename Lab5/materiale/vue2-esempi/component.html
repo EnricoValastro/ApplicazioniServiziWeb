@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>component</title>
+</head>
+<body>
+<div id="app">
+<my-cmp></my-cmp>
+  <hr>
+  <my-cmp></my-cmp>
+</div>
+
+
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  Vue.createApp({}).component('my-cmp',{
+    template: '<p>Server status: {{ status }}</p>',
+    data(){
+      return {
+        status: "online"
+      }
+    }
+  }).mount('#app')
+
+
+</script>
+</body>
+</html>
