@@ -49,16 +49,15 @@
 						axios.get('http://localhost:3000/api/movies')
 							.then(response => {
 								this.movies = response.data;
-								this.movies.forEach((movie) =>{
+								this.movies.forEach((movie) => {
 									if(movie.poster != null){
-
-										movie.poster = movie.poster.replace("http://ia.media-imdb.com/", "https://m.media-amazon.com");
+										movie.poster = movie.poster.replace(/http:\/\/ia.media-imdb.com/, "https://m.media-amazon.com");
 									}
 								});
 							})
 							.catch(error => {
 								console.log(error);
-							})
+							});
 					},
 					replaceByDefault(event){
 						event.target.src = "https://www.stillisolutions.com/wp-content/uploads/2017/09/no-image-box-300x155.png";

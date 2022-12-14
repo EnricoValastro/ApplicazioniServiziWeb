@@ -1,85 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Hello World in Vue.js</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<style>
-	table td img{ width: 100px;}
-</style>
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>Hello World in Vue.js</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+		<style>
+			table td img{ width: 100px;}
+		</style>
+	</head>
 
-<body>
-<div id="crud-movies-app" class="container-fluid">
-	<h1>CRUD Movies</h1>
-	<div class="row">
-		<div class="col">
-			<button type="button" class="btn btn-success"><i class="fas fa-plus"></i> Add Movie</button>
+	<body>
+		<div id="crud-movies-app" class="container-fluid">
+			<h1>CRUD Movies</h1>
+			<div class="row my-2">
+				<div class="col">
+					<button type="button" class="btn btn-success" @click.prevent="showAddMovie"><i class="fas fa-plus"></i> Add Movie</button>
+				</div>
+			</div>
+			<div class="row" v-if="adding" >
+				<div class="col">
+					<form>
+						<div class="form-group">
+							<label for="title">Title</label>
+							<input  type="text" class="form-control" id="title" placeholder="Enter title" v-model="new_movie.title">
+						</div>
+						<div class="form-group">
+							<label for="plot">Plot</label>
+							<textarea class="form-control" id="plot" v-model="new_movie.plot"></textarea>
+						</div>
+						<div class="form-group">
+							<label for="poster">Poster link</label>
+							<input  type="text" class="form-control" id="poster" placeholder="Enter poster link" v-model="new_movie.poster">
+							<img v-bind:src=new_movie.poster alt="" />
+						</div>
+						<div class="form-group">
+							<label for="release">Release date</label>
+							<input  type="date" class="form-control" id="release" v-model="new_movie.released" >
+						</div>
+						<button type="submit" class="btn btn-primary" @click.prevent="saveNewMovie">Submit</button>
+						<button type="submit" class="btn btn-danger" @click.prevent="cancelAddMovie" >Cancel</button>
+
+					</form>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+				<table class="table responsive">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col">Title</th>
+							<th scope="col">Plot</th>
+							<th scope="col">Poster</th>
+							<th scope="col">Release date</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="movie in movies" :key="movie._id" >
+							<td>{{movie.title}}</td>
+							<td>{{movie.plot}}</td>
+							<td><img v-if="movie.poster" v-bind:src="movie.poster" class="card-img" alt="" @error="replaceByDefault"></td>
+							<td>{{movie.released ? movie.released.substring(0,10) : 'N/A'}}</td>
+							<td>
+								<button  type="button" class="btn btnsm" @click.prevent="deleteMovie(movie._id)">
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="row" >
-		<div class="col">
-			<form>
-				<div class="form-group">
-					<label for="title">Title</label>
-					<input  type="text" class="form-control" id="title" placeholder="Enter title">
-				</div>
-				<div class="form-group">
-					<label for="plot">Plot</label>
-					<textarea class="form-control" id="plot">
-					</textarea>
-				</div>
-				<div class="form-group">
-					<label for="poster">Poster link</label>
-					<input  type="text" class="form-control" id="poster" placeholder="Enter poster link">
-					<img src="" alt="" />
-				</div>
-				<div class="form-group">
-					<label for="release">Release date</label>
-					<input  type="date" class="form-control" id="release" >
-				</div>
-				<button type="submit" class="btn btn-primary">Submit</button>
-				<button type="submit" class="btn btn-danger">Cancel</button>
 
-			</form>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col">
-		<table class="table responsive">
-			<thead class="thead-dark">
-				<tr>
-					<th scope="col">Title</th>
-					<th scope="col">Plot</th>
-					<th scope="col">Poster</th>
-					<th scope="col">Release date</th>
-					<th scope="col">Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-			<tr >
-				<td></td>
-				<td></td>
-				<td><img src="" alt=""></td>
-				<td></td>
-				<td>
-					<button  type="button" class="btn btnsm">
-						<i class="fas fa-trash-alt"></i>
-					</button>
-				</td>
-			</tr>
-			</tbody>
-		</table>
-		</div>
-	</div>
-</div>
-<script src="https://unpkg.com/vue@3"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
+		<script src="https://unpkg.com/vue@3"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script>
+			const app = Vue.createApp({
+				data(){
+					return{
+						movies: [],
+						adding: false,
+						new_movie: {
+							title: "",
+							plot: "",
+							poster: "",
+							released: ""
+						}
+					}
+				},
+				methods :{
+					list_movies(){
+						axios.get('http://localhost:3000/api/movies')
+								.then(response => {
+									this.movies = response.data;
+									this.movies.forEach((movie) => {
+										if(movie.poster != null){
+											movie.poster = movie.poster.replace(/http:\/\/ia.media-imdb.com/, "https://m.media-amazon.com");
+										}
+									});
+								})
+								.catch(error => {
+									console.log(error);
+								});
+					},
+					replaceByDefault(event){
+						event.target.src = "https://www.stillisolutions.com/wp-content/uploads/2017/09/no-image-box-300x155.png";
+					},
+					showAddMovie(){
+						this.adding = true;
+					},
+					cancelAddMovie(){
+						this.adding = false;
+						this.resetNewMovie();
+					},
+					resetNewMovie(){
+						this.new_movie = {
+							title: "",
+							plot: "",
+							poster: "",
+							released: new Date().toISOString().slice(0,10)
+						}
+					},
+					saveNewMovie(){
+						axios.post('/api/movies', this.new_movie)
+								.then(response => {
+									this.movies.push(response.data);
+									this.cancelAddMovie();
+								})
+								.catch(error => {
+									console.log(error);
+								});
+					},
+					deleteMovie(_id){
+						axios.delete('http://localhost:3000/api/movies/'+_id)
+								.then(response => {
+									this.movies.splice(this.movies.findIndex(item =>item._id === _id), 1);
+								})
+								.catch(error => {
+									console.log(error);
+								});
+					}
+				},
+				mounted(){
+					this.list_movies();
+				}
+			});
+			app.mount("#crud-movies-app");
+		</script>
 
-</script>
-
-</body>
+	</body>
 </html>
